@@ -1,0 +1,207 @@
+
+/*
+ Find number of connected sets / islands in a 2D matrix
+ Built in Visual Studio 2015
+ Copyright Puneet Sohi 11/10/2015
+*/
+
+// ConsoleApplication2.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <fstream>
+
+//using namepsace std;
+
+
+#define PLUS(A,B) \
+    A+B
+
+#define MACRO(num, str)	\
+    std::cout << num << " is " << str << " number" << std::endl;
+
+#define MAX_SIZE 100
+#define MAX_TEST_CASES 6
+
+bool checkBounds(int row, int col, int size)
+{
+	if (row >= 0 && row < size && col >= 0 && col < size)
+	{
+		return true;
+	}
+	else
+	{
+		//std::cout << "Failed boundary test in: " << row << col << std::endl;
+		return false;
+	}
+}
+
+void zeroNeighbors(int Arr[MAX_SIZE][MAX_SIZE], int row, int col, int size) {
+	if (checkBounds(row - 1, col - 1, size))
+	{
+		if (Arr[row - 1][col - 1] != 0) {
+			//std::cout << "  Match found at: " << row-1 << col-1 << std::endl;
+			Arr[row - 1][col - 1] = 0;
+			zeroNeighbors(Arr, row - 1, col - 1, size);
+		}
+	}
+	if (checkBounds(row - 1, col, size))
+	{
+		if (Arr[row - 1][col] != 0) {
+			//std::cout << "  Match found at: " << row - 1 << col << std::endl;
+			Arr[row - 1][col] = 0;
+			zeroNeighbors(Arr, row - 1, col, size);
+		}
+	}
+	if (checkBounds(row - 1, col + 1, size))
+	{
+		if (Arr[row - 1][col + 1] != 0) {
+			//std::cout << "  Match found at: " << row - 1 << col + 1 << std::endl;
+			Arr[row - 1][col + 1] = 0;
+			zeroNeighbors(Arr, row - 1, col + 1, size);
+		}
+	}
+	if (checkBounds(row, col - 1, size))
+	{
+		if (Arr[row][col - 1] != 0) {
+			//std::cout << "  Match found at: " << row << col - 1 << std::endl;
+			Arr[row][col - 1] = 0;
+			zeroNeighbors(Arr, row, col - 1, size);
+		}
+	}
+	if (checkBounds(row, col + 1, size))
+	{
+		if (Arr[row][col + 1] != 0) {
+			//std::cout << "  Match found at: " << row << col + 1 << std::endl;
+			Arr[row][col + 1] = 0;
+			zeroNeighbors(Arr, row, col + 1, size);
+		}
+	}
+	if (checkBounds(row + 1, col - 1, size))
+	{
+		if (Arr[row + 1][col - 1] != 0) {
+			//std::cout << "  Match found at: " << row + 1 << col - 1 << std::endl;
+			Arr[row + 1][col - 1] = 0;
+			zeroNeighbors(Arr, row + 1, col - 1, size);
+		}
+	}
+	if (checkBounds(row + 1, col, size))
+	{
+		if (Arr[row + 1][col] != 0) {
+			//std::cout << "  Match found at: " << row + 1 << col << std::endl;
+			Arr[row + 1][col] = 0;
+			zeroNeighbors(Arr, row + 1, col, size);
+		}
+	}
+	if (checkBounds(row + 1, col + 1, size))
+	{
+		if (Arr[row + 1][col + 1] != 0) {
+			//std::cout << "  Match found at: " << row + 1 << col + 1 << std::endl;
+			Arr[row + 1][col + 1] = 0;
+			zeroNeighbors(Arr, row + 1, col + 1, size);
+		}
+	}
+	return;
+}
+
+
+int findSets(int Arr[MAX_SIZE][MAX_SIZE], int size) {
+	int i = 0; int j = 0;
+	int numSets = 0;
+
+	//display
+	/*
+	while (i <= size) {
+		while (j < size) {
+			//std::cout << Arr[i][j] << " ";
+			j++;
+		}
+		std::cout << std::endl;
+		j = 0;
+		i++;
+	}
+	
+	i = 0; j = 0;
+	*/
+
+	// find sets
+	while (i < size)
+	{
+		while (j < size)
+		{
+			//std::cout << "i: " << i << " j: " << j << std::endl;
+			if (Arr[i][j] != 0)
+			{
+				//match found, make this and its neighbors 0 and increase counter
+				//std::cout << "Match found at: " << i << j << std::endl;
+				Arr[i][j] = 0;
+				numSets++;
+				zeroNeighbors(Arr, i, j, size);
+			}
+			j++;
+		
+		}
+		//std::cout << "  i: " << i << " j: " << j << std::endl;
+		i++;
+		j = 0;
+	}
+	return numSets;
+}
+
+int main()
+{
+
+	int T = 0; int N = 0;
+	int c = 0;
+	int i = 0; int j = 0; int temp = 0;
+	int A[MAX_SIZE][MAX_SIZE] = { 0 };
+	
+	//read from console
+	if (scanf_s("%d", &T) != 1)
+	{
+		fprintf(stderr, "Err");
+		exit(1);
+	}
+	
+	if (T > MAX_TEST_CASES)
+	{
+		std::cout << "Number of test cases exceeds" << MAX_TEST_CASES << std::endl;
+		return 1;
+	}
+
+	while (c < T)
+	{
+		if (scanf_s("%d", &N) != 1)
+		{
+			fprintf(stderr, "Err");
+			exit(1);
+		}
+		
+		//scan matrix
+		while (i < N) {
+			while (j < N) {
+				if (scanf_s("%d", &temp) != 1) {
+					fprintf(stderr, "Err, one input expected");
+					exit(1);
+				}
+				A[i][j] = temp;
+				//std::cout << "i: " << i << " j: " << j << std::endl;
+				j++;
+			}
+			j = 0;
+			i++;
+			//std::cout << "  i: " << i << " j: " << j << std::endl;
+		}
+		std::cout << findSets(A, N) << std::endl;
+
+		//zero out all variables to use again
+		A[MAX_SIZE][MAX_SIZE] = { 0 };
+		i = 0; j = 0; temp = 0;
+		c++;
+	}
+    return 0;
+}
+
