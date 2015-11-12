@@ -1,0 +1,189 @@
+/*
+ * Copyright Puneet Sohi 2015
+ * This program will evaluate pre and post fix 
+ * expressions and find answers
+ * TBD: 1. Only handles single digits 0-9 
+ * 
+ *
+ */
+
+#include "stdafx.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <stack>
+#include <queue>
+
+//using namepsace std;
+
+
+#define PLUS(A,B) \
+    A+B
+
+#define MACRO(num, str)	\
+    std::cout << num << " is " << str << " number" << std::endl;
+
+#define MAX_SIZE 100
+#define MAX_TEST_CASES 6
+
+int main()
+{
+	char c;
+	int  i;
+	int num1 = 0; 
+	int num2 = 0;
+	int result = 0;
+
+	std::queue<char> Q;
+	Q.push('5');
+	Q.push('1');
+	Q.push('2');
+	Q.push('+');
+	Q.push('4');
+	Q.push('*');
+	Q.push('+');
+	Q.push('3');
+	Q.push('-');
+
+	std::stack<int> S;
+
+
+	while (!Q.empty())
+	{
+		c = Q.front();
+		Q.pop();
+
+		switch (c)
+		{
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			i = c - '0';
+			std::cout << "Num dequeued: " << i << std::endl;
+			S.push(i);
+			break;
+
+		case '+':
+			std::cout << "addition" << std::endl;
+			if (!S.empty()) {
+				num2 = S.top();
+				std::cout << " num2: " << num2;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+			if (!S.empty()) {
+				num1 = S.top();
+				std::cout << "; num1: " << num1 << std::endl;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+
+			result = num1 + num2;
+			S.push(result);
+			break;
+
+		case '-':
+			std::cout << "Sub" << std::endl;
+			if (!S.empty()) {
+				num2 = S.top();
+				std::cout << " num2: " << num2;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+			if (!S.empty()) {
+				num1 = S.top();
+				std::cout << "; num1: " << num1 << std::endl;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+
+			result = num1 - num2;
+			S.push(result);
+			break;
+
+		case '/':
+			std::cout << "Divide" << std::endl;
+			if (!S.empty()) {
+				num2 = S.top();
+				std::cout << " num2: " << num2;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+			if (!S.empty()) {
+				num1 = S.top();
+				std::cout << "; num1: " << num1 << std::endl;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+
+			result = num1 / num2;
+			S.push(result);
+			break;
+
+		case '*':
+			std::cout << "Mult" << std::endl;
+			if (!S.empty()) {
+				num2 = S.top();
+				std::cout << " num2: " << num2;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+			if (!S.empty()) {
+				num1 = S.top();
+				std::cout << "; num1: " << num1 << std::endl;
+				S.pop();
+			}
+			else {
+				std::cout << "Error in the expression" << std::endl;
+				exit(1);
+			}
+
+			result = num1 * num2;
+			S.push(result);
+			break;
+
+		default:
+			std::cout << "None!" << std::endl;
+				break;
+		}	
+	}
+
+	if (!S.empty()) {
+		std::cout << "Result " << S.top() << std::endl;
+		S.pop();
+	}
+	else{
+		std::cout << "Err" << std::endl;
+	}
+
+	return 0;
+}
+
