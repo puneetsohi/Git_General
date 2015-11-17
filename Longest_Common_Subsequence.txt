@@ -1,0 +1,132 @@
+/*
+ * Copyright Puneet Sohi 2015
+ * Finds longest commont susequence between 2 strings
+ * by dynamic programming
+ * Written in visual studio, for other dev envs, remove the
+ * #include "stdafx.h"
+ * Handles string of max lenght 19
+ */
+
+#include "stdafx.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <stack>
+#include <queue>
+#include <memory>
+
+//using namepsace std;
+
+#define ROW 20
+#define COL 20
+
+void print2DArr(int A[][COL]) {
+	int i = 0; int j = 0;
+
+	while (i < ROW-1) {
+		while (j < COL-1) {
+			std::cout << A[i][j] << " ";
+			j++;
+		}
+		std::cout << "\n";
+		j = 0;
+		i++;
+	}
+	return;
+}
+
+void findAllSubseq(int A[][COL], std::string s1, std::string s2) {
+	/* Go through the array and find all possible
+         * subsequences.
+         * rows and cols with idx 0 are empty
+         * i and j counters being from 1 and goto ROW-1
+	 */
+	unsigned int i = 0; unsigned int j = 0;
+	while (i < s1.length()) {
+		while (j < s2.length()) {
+			   if (s1[i] == s2[j]) {
+				    //std::cout << "i: " << i << " j: " << j << " match \n";
+				    A[i+1][j+1] = A[i][j] + 1;
+			   }
+			   else {
+				    //std::cout << "i: " << i << " j: " << j << " no match \n";
+					if (  A[i][j + 1] >=  A[i + 1][j]  ) {
+						A[i+1][j+1] = A[i][j + 1];
+					}
+					else {
+						A[i+1][j+1] = A[i + 1][j];
+					}
+			   }
+			   //print2DArr(A);
+			   j++;
+		}
+		j = 0;
+		i++;
+	}
+        return;
+}
+
+std::string backtrack(int A[][COL], std::string s1, std::string s2)
+{
+	// can always print using print2DArr(A); for troubleshooting
+	if (s1.length() < 1 || s2.length() < 1) {
+		std::cout << "Input string null \n";
+		return "";	
+ 	}
+	std::string s = "";
+	int b_i = s1.length();
+	int b_j = s2.length();
+	int i = 0; 
+	int j = 0;
+
+	while (b_i > 0 && b_j > 0) {
+		i = b_i - 1;
+		j = b_j - 1; 
+		//std::cout << " b_i,b_j: " << b_i << " " << b_j << "\n";
+		if (s1[i] == s2[j]) {
+			//std::cout << " match," << " A[b_i][b_j]: " << A[b_i][b_j] << "\n";
+			s = s1[i] + s;
+			b_i--; 
+			b_j--;
+		}
+		else {
+			if (A[b_i][b_j - 1] > A[b_i - 1][b_j]) {
+				//std::cout << " going left\n";
+				b_j--;
+			}
+			else {
+				//std::cout << " going up \n";
+				b_i--;
+			}
+		}
+	}
+	return s;
+}
+
+int main()
+{
+	std::string s1 = "";
+	std::string s2 = "";
+
+/*
+	//for user input
+	std::cout << "Enter 1st string \n";
+	std::cin >> s1;
+	std::cout << "Enter 2nd string \n";
+	std::cin >> s2;
+*/
+
+	int A[ROW][COL] = { 0 };  //can handle subseq of max length 19
+	s1 = "gac";
+	s2 = "agcat";
+
+    
+	//print2DArr(A);
+	findAllSubseq(A, s1, s2);
+	//print2DArr(A);
+	std::string LCS = backtrack(A, s1, s2);
+	std::cout << "==== LCS:" << LCS <<  " ====\n";
+
+	return 0;
+}
+
