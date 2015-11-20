@@ -1,0 +1,201 @@
+/*
+ * Copyright Puneet Sohi 2015
+ * Given a number K, find the smallest Fibonacci number ( other than 1 ) 
+ * that shares a common factor with it. 
+ * Problem Statement (for Hackerrank)
+ * Given a number K, find the smallest Fibonacci number ( other than 1 ) that shares a common factor with it. A number is said to be a common factor of two numbers if it exactly divides both of them. 
+ * Output two separate numbers, F and D, where F is the smallest fibonacci number and D is the smallest number other than 1 which divides K and F.
+ * *Input Format *
+ * First line of the input contains an integer T, the number of testcases.
+ * Then follows T lines, each containing an integer K.
+ * Output Format
+ * Output T lines, each containing the required answer for each corresponding testcase.
+ * *Sample Input *
+ * 3
+ * 3
+ * 5
+ * 161
+ * Sample Output
+ * 3 3
+ * 5 5
+ * 21 7
+ * Explanation
+ * There are three testcases. The first test case is 3, the smallest required fibonacci number  3. The second testcase is 5 and the third is 161. For 161 the smallest fibonacci numer sharing a common divisor with it is 21 and the smallest number other than 1 dividing 161 and 7 is 7.
+ * *Constraints : *
+ * 1 <= T <= 5
+ * 2 <= K <= 1000,000
+ * The required fibonacci number is guranteed to be less than 10^18. 
+ * Written in visual studio, for other dev envs, remove the
+ * #include "stdafx.h" and change scanf_s to scanf to run code(already done)
+ */
+
+//#include "stdafx.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <stack>
+#include <queue>
+#include <memory>
+#include <vector>
+//using namepsace std;
+
+
+#define PLUS(A,B) \
+    A+B
+
+#define MACRO(num, str)	\
+    std::cout << num << " is " << str << " number" << std::endl;
+
+#define MAX_SIZE 1000000
+#define MAX_TEST_CASES 5
+#define MAX_ARR 3
+#define ROW 20
+#define COL 20
+
+bool isPrime(long int n) {
+	
+	/*any prime is of the form 6x +- 1 
+	  Therefore to find the next prime number
+	  keep dividing with 6x +- 1 till we reach
+	  the sqrt of the number, if no divisor
+	  found till then, num is prime
+	*/
+	long int next_Divisor = 6;
+
+	if (n == 0 || n == 1 || n == 2 || n == 3)
+		return true;
+
+	if (n % 2 == 0 || n % 3 == 0) {
+		//std::cout << "divisible by 2 or 3, not prime \n";
+		return false;
+	}
+	while (n > ( (next_Divisor - 1) * (next_Divisor - 1) ) ) {
+		if (n % (next_Divisor - 1) == 0)
+			return false;
+		if (n % (next_Divisor + 1) == 0)
+			return false;
+		next_Divisor = next_Divisor + 6;
+	}
+	return true;
+}
+
+int findNextPrime(long int n) {
+	bool f = false;
+	while (1) {
+		n = n + 1;
+		f = isPrime(n);
+		if (f){
+			//std::cout << "is prime" << std::endl;
+			return n;
+		
+		}
+	}
+}
+
+std::vector<long int> findPrimeFactors(long int N) {
+	std::vector<long int> V;
+
+	if (N == 1) {
+		V.push_back(1);
+		return V;
+	}
+
+	bool push = true; 
+	long int p = 2; //next prime factor
+	long int Q = 2; //Quotient
+	long int R = 0; //Remainder
+	long int K = N; //original number
+
+	while (Q > 0) {	
+		Q = K / p;
+		R = K % p;
+		//std::cout << " K: " << K << " p: " << p << " Q: " << Q << " R: " << R << std::endl;
+
+		if (R != 0) {
+			p = findNextPrime(p);
+			//std::cout << " R is not zero, p: " << p << std::endl;
+			push = true;
+		}
+		else {
+			K = Q;
+			//std::cout << " R is zero, K: " << K << std::endl;
+			if (push) {
+				//std::cout << "  push flag set \n";
+				V.push_back(p);
+				push = false;
+			}
+		}
+	}
+	return V;
+}
+
+void findFibFactor(long int K) {
+
+	long long int f1 = 0;
+	long long int f2 = 1; //two pervious fibonacci series numbers
+	long long int f = 0;  //current fib number
+	std::vector<long int>A; //holds prime factors of K
+	A = findPrimeFactors(K);
+	unsigned int i = 0;
+
+	while (1) {
+		f = f1 + f2;
+		f1 = f2;
+		f2 = f;
+		//std::cout << "next fib: " << f << std::endl;
+		while (i < A.size()) {
+			//std::cout << " Next factor: " << A[i] << std::endl;
+			if (f%A[i] == 0) {
+				std::cout << f << " " << A[i] << std::endl;
+				return;
+			}
+			i++;
+		}
+		i = 0;
+	}
+	return;
+}
+
+
+int main()
+{
+	/* 1 <= T <= 5
+       2 <= K <= 1,000,000 -> K is long int
+      Fibonacci number is guranteed to be less than 10 ^ 18 -> fib must be long long int
+	*/
+
+	int T = 0;
+	long int K = 0;
+	long int Arr[MAX_TEST_CASES];
+
+    if ( scanf("%d", &T) != 1 ){
+		fprintf(stderr, "Err in scanf\n");
+		exit(1);
+	}
+	
+	if (T < 1 || T > MAX_TEST_CASES) {
+		//std::cout << "Err in input\n" << std::endl;
+		return 1;
+	}
+
+	int i = 0;
+	while (i < T) {
+		if (scanf("%ld", &K) != 1) {
+			fprintf(stderr, "err in input\n");
+			exit(1);
+		}
+		if (K < 2 || K > MAX_SIZE) {
+			return 1;
+		}
+		Arr[i] = K;
+		i++;
+	}
+
+	i = 0;
+	while (i < T) {
+		findFibFactor(Arr[i]);
+		i++;
+	}
+	return 0;
+}
+
