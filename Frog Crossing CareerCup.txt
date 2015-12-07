@@ -1,0 +1,85 @@
+/*
+* Copyright Puneet Sohi 2015
+* Problem from Career Cup:
+A frog has to cross the river from one end to another end. river has stones in between randomly where frog can jump. frog can't jump into the river. problem is that will frog ever reach other end with following conditions?
+1. frog allow to do same jump as previous jump. or
+2. frog allow to jump 1 more as previous jump. or
+3. frog allow to jump 1 less as previous jump.
+
+consider river as Boolean Array. Stone is a element in array where value is true .
+*/
+
+#include "stdafx.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <stack>
+#include <queue>
+#include <memory>
+#include <vector>
+//using namepsace std;
+
+
+#define PLUS(A,B) \
+    A+B
+
+#define MACRO(num, str)	\
+    std::cout << num << " is " << str << " number" << std::endl;
+
+#define MAX_SIZE 1000000
+#define MAX_TEST_CASES 5
+#define MAX_ARR 3
+#define ROW 20
+#define COL 20
+
+bool recFn(int I, bool *A, int ji, int size) {
+	//I curr idx, ji jump idx
+	std::cout << "I: " << I << " jumped: " << ji << std::endl;
+
+	if (I >= size) {
+		std::cout << "size exceeded " << I << std::endl;
+		return true;
+	}
+	bool f;
+
+	if (!A[I]) {
+		std::cout << "false entry at " << I << std::endl;
+		f = false;
+	}
+	else {
+		if (ji > 1) 
+			f = recFn(I + ji - 1, A, ji - 1, size) || recFn(I + ji, A, ji, size) || recFn(I + ji + 1, A, ji + 1, size);
+		else
+			f =  recFn(I + ji, A, ji, size) || recFn(I + ji + 1, A, ji + 1, size);
+	}
+	if (f)
+		std::cout << "f true, I: " << I << std::endl;
+	else
+		std::cout << "f false, I: " << I <<std::endl;
+	return f;
+}
+
+bool startFn(bool *A) {
+	int size = 6;
+	std::cout << "size of A: " << size << std::endl;
+	bool f = recFn(0, A, 1, size);
+
+	return f;
+}
+
+int main()
+{
+	/*
+	std::string s = "";
+	std::cin >> s;
+	*/
+	bool A[6] = { true, false, false, false, true, true };
+	int f = startFn(A);
+	if (f)
+		std::cout << "Can escape" << std::endl;
+	else
+		std::cout << "Cannot escape" << std::endl;
+
+	return 0;
+}
+
