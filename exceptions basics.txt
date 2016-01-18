@@ -1,0 +1,71 @@
+/*
+* Copyright Puneet Sohi 2016
+
+*/
+
+#include "stdafx.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <memory>
+#include <typeinfo>
+
+//using namepsace std;
+
+class tooHot : public std::exception {
+public:
+	virtual const char* what() const throw() {
+		return "too Hot";
+	}
+}hot;
+
+class tooCold : public std::exception {
+public:
+	virtual const char* what() const throw() {
+		return "too Cold";
+	}
+}cold;
+
+void someFn(int temp) throw(tooCold, tooHot) {
+	if (temp < 30) 
+	    throw cold;
+	else if (temp > 40) 
+		throw hot;
+}
+
+int main()
+{
+
+	/*Simple exception*/
+	try {
+		throw 20;
+	}
+	catch (int e) {
+		std::cout << "Int exception: " << e << std::endl;
+	}
+	catch (char e) {
+		std::cout << "Char exception: " << e << std::endl;
+	}
+	catch (...) {
+		//catch all
+		std::cout << "Unknown exception" << std::endl;
+	}
+
+
+	/* Any exception always derives from the std::exception class
+	   and overrides its what() function
+	*/
+
+	try {
+		someFn(49);
+		std::cout << "Okay! \n" << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cout << e.what() << std::endl;
+	}
+
+
+
+	return 0;
+}
+
